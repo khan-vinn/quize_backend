@@ -8,7 +8,7 @@ router.get("/new-quize", createNewQuizeBlock);
 router.get("/quize/:id", getQuizeId);
 router.put("/quize/:id", updateQuestionId);
 router.get("/quize/result/:id", getQuizeIdAnswers);
-router.get("/quizes", getQuizeAll);
+router.get("/quizes/:user", getQuizeAll);
 
 router.post("/quize/:id", createAnser);
 router.get("/result/:id", getAnswers);

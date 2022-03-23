@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { AnswersBlockModel } from "../models/answers";
 import { QuestionModel, QuizeModel } from '../models/quizes';
 import { IQuistion, IQuize } from '../types/quize';
+import { IAnswers } from '../types/answers';
 
 const createNewQuestion = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -61,7 +62,9 @@ const getQuizeIdAnswers = async (req: Request, res: Response): Promise<void> => 
 
 const getQuizeAll = async (req: Request, res: Response): Promise<void> => {
     try {
-
+        const { user } = req.params;
+        const quizesAll = await QuizeModel.find({ user })
+        res.status(200).json(quizesAll)
     } catch (error) {
         throw error
     }
