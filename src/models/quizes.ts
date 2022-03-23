@@ -21,7 +21,16 @@ const QuestionSchema = new Schema({
 })
 
 const QuizeSchema = new Schema({
-    values: [QuestionSchema], user: { type: String, required: true }
+    values: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Question"
+        }
+    ],
+    user: {
+        type: String,
+        required: true
+    }
 })
 
 export const QuestionModel = model<IQuistion>("Question", QuestionSchema)

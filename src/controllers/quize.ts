@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
-import { QuestionModel, QuizeModel } from "../models/quizes"
-import { IQuistion } from '../types/quize';
+import { AnswersBlockModel } from "../models/answers";
+import { QuestionModel, QuizeModel } from '../models/quizes';
+import { IQuistion, IQuize } from '../types/quize';
 
 const createNewQuestion = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -26,7 +27,12 @@ const createNewQuizeBlock = async (req: Request, res: Response): Promise<void> =
 
 const getQuizeId = async (req: Request, res: Response): Promise<void> => {
     try {
-
+        const { id } = req.params
+        const quize: IQuize | null = await QuizeModel.findById(id)
+        if (!quize) {
+            throw new Error
+        }
+        res.status(200).json(quize)
     } catch (error) {
         throw error
     }
@@ -34,7 +40,10 @@ const getQuizeId = async (req: Request, res: Response): Promise<void> => {
 
 const updateQuestionId = async (req: Request, res: Response): Promise<void> => {
     try {
-
+        const { question, answer, answers, pictures } = req.body
+        const { id } = req.params
+        const questionM: IQuistion | null = await QuestionModel.findByIdAndUpdate(id, { question, answer, answers, pictures })
+        res.status(200).json({ message: "updated", question: questionM })
     } catch (error) {
         throw error
     }
@@ -42,7 +51,9 @@ const updateQuestionId = async (req: Request, res: Response): Promise<void> => {
 
 const getQuizeIdAnswers = async (req: Request, res: Response): Promise<void> => {
     try {
-
+        const { id } = req.params;
+        const answersM = await AnswersBlockModel.find({ quize_id: id })
+        res.status(200).json(answersM)
     } catch (error) {
         throw error
     }

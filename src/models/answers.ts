@@ -18,7 +18,18 @@ const AnswerSchema = new Schema({
 })
 
 const AnswersBlockSchema = new Schema({
-    values: [AnswerSchema], user: { type: String, required: true }
+    values: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Answer"
+        }
+    ],
+    user: {
+        type: String, required: true
+    },
+    quize_id: {
+        type: Schema.Types.ObjectId, ref: "Quize"
+    }
 })
 
 export const AnswerModel = model<IAnswer>("Answer", AnswerSchema)
