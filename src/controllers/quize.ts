@@ -2,7 +2,6 @@ import { Request, Response } from "express"
 import { AnswersBlockModel } from "../models/answers";
 import { QuestionModel, QuizeModel } from '../models/quizes';
 import { IQuistion, IQuize } from '../types/quize';
-import { IAnswers } from '../types/answers';
 
 const createNewQuestion = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -16,6 +15,7 @@ const createNewQuestion = async (req: Request, res: Response): Promise<void> => 
         throw error
     }
 }
+
 const createNewQuizeBlock = async (req: Request, res: Response): Promise<void> => {
     try {
         const block = new QuizeModel()
@@ -26,10 +26,20 @@ const createNewQuizeBlock = async (req: Request, res: Response): Promise<void> =
     }
 }
 
+const updateQuizeBlock = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { quizeId, answersId } = req.body;
+        const quizeBlock = await QuizeModel.findByIdAndUpdate(quizeId, { values: answersId })
+        res.status(200).json(quizeBlock)
+    } catch (error) {
+        throw error
+    }
+}
+
 const getQuizeId = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params
-        const quize: IQuize | null = await QuizeModel.findById(id)
+        const quize: IQuize | null = await QuizeModel.findById(id).populate("values")
         if (!quize) {
             throw new Error
         }
@@ -53,7 +63,7 @@ const updateQuestionId = async (req: Request, res: Response): Promise<void> => {
 const getQuizeIdAnswers = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const answersM = await AnswersBlockModel.find({ quize_id: id })
+        const answersM = await AnswersBlockModel.find({ quize_id: id }).populate("values")
         res.status(200).json(answersM)
     } catch (error) {
         throw error
@@ -63,11 +73,11 @@ const getQuizeIdAnswers = async (req: Request, res: Response): Promise<void> => 
 const getQuizeAll = async (req: Request, res: Response): Promise<void> => {
     try {
         const { user } = req.params;
-        const quizesAll = await QuizeModel.find({ user })
+        const quizesAll = await QuizeModel.find({ user }).populate("values")
         res.status(200).json(quizesAll)
     } catch (error) {
         throw error
     }
 }
 
-export { getQuizeAll, createNewQuizeBlock, getQuizeId, getQuizeIdAnswers, createNewQuestion, updateQuestionId }
+export { getQuizeAll, createNewQuizeBlock, getQuizeId, getQuizeIdAnswers, createNewQuestion, updateQuestionId, updateQuizeBlock }
